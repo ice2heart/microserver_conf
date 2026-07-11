@@ -1,0 +1,11 @@
+---
+- resources:
+    cpu: true
+    memory: true
+
+- datetime:
+    text_size: xl
+    format:
+      timeStyle: short
+      dateStyle: long
+      hourCycle: h23

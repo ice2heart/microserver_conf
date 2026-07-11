@@ -1,0 +1,82 @@
+---
+- Media:
+    - Jellyfin:
+        icon: jellyfin.svg
+        href: https://media.microserver
+        description: movies & tv
+        server: local
+        container: jellyfin
+        widget:
+          type: jellyfin
+          url: http://jellyfin:8096
+          key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+          enableBlocks: true
+
+- Downloads:
+    - qBittorrent:
+        icon: qbittorrent.svg
+        href: https://flood.microserver
+        description: torrents (via VPN)
+        server: local
+        container: qbittorrent
+        widget:
+          type: qbittorrent
+          url: http://gluetun:8080
+          username: "{{HOMEPAGE_VAR_QBT_USERNAME}}"
+          password: "{{HOMEPAGE_VAR_QBT_PASSWORD}}"
+    - Paperless:
+        icon: paperless-ngx.svg
+        href: https://paperless.microserver
+        description: document archive
+        server: local
+        container: paperless
+        widget:
+          type: paperlessngx
+          url: http://paperless:8000
+          username: "{{HOMEPAGE_VAR_PAPERLESS_USERNAME}}"
+          password: "{{HOMEPAGE_VAR_PAPERLESS_PASSWORD}}"
+
+- Files:
+    - Copyparty:
+        icon: mdi-folder-network
+        href: https://fs.microserver
+        description: file browser
+        server: local
+        container: copyparty
+    - MinIO:
+        icon: minio.svg
+        href: https://minioadmin.microserver
+        description: s3 storage console
+        server: local
+        container: minio
+    - Samba:
+        icon: mdi-nas
+        description: smb shares (Mount, Downloads)
+        server: local
+        container: samba
+
+- Infrastructure:
+    - Traefik:
+        icon: traefik.svg
+        href: https://traefik.microserver
+        description: reverse proxy
+        server: local
+        container: traefik
+        widget:
+          type: traefik
+          url: http://traefik:8080
+    - step-ca:
+        icon: mdi-certificate
+        description: local certificate authority
+        server: local
+        container: step-ca
+    - Twingate:
+        icon: twingate.png
+        description: remote access connector
+        server: local
+        container: twingate
+    - Gluetun:
+        icon: gluetun.svg
+        description: vpn tunnel
+        server: local
+        container: gluetun

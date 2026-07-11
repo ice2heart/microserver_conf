@@ -1,0 +1,71 @@
+services:
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20
+    container_name: paperless
+    restart: unless-stopped
+    depends_on:
+      paperless-db:
+        condition: service_healthy
+      paperless-redis:
+        condition: service_started
+    environment:
+      PAPERLESS_REDIS: redis://paperless-redis:6379
+      PAPERLESS_DBHOST: paperless-db
+      PAPERLESS_DBPASS: ${PAPERLESS_DB_PASSWORD}
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY}
+      PAPERLESS_URL: https://paperless.microserver
+      PAPERLESS_TIME_ZONE: ${TZ:-UTC}
+      PAPERLESS_ADMIN_USER: ${PAPERLESS_ADMIN_USER}
+      PAPERLESS_ADMIN_PASSWORD: ${PAPERLESS_ADMIN_PASSWORD}
+      PAPERLESS_OCR_LANGUAGES: rus
+      PAPERLESS_OCR_LANGUAGE: eng+rus
+      USERMAP_UID: "1000"
+      USERMAP_GID: "1000"
+    volumes:
+      - "./data/paperless/data:/usr/src/paperless/data"
+      - "./data/paperless/media:/usr/src/paperless/media"
+      - "./data/paperless/export:/usr/src/paperless/export"
+      # drop documents here (or into the samba share later) to have them ingested
+      - "./data/paperless/consume:/usr/src/paperless/consume"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.paperless.rule=Host(`paperless.microserver`)"
+      - "traefik.http.routers.paperless.entrypoints=websecure"
+      - "traefik.http.services.paperless.loadbalancer.server.port=8000"
+    networks:
+      - proxy
+      - paperless
+
+  paperless-redis:
+    image: redis:7-alpine
+    container_name: paperless-redis
+    restart: unless-stopped
+    volumes:
+      - "./data/paperless/redisdata:/data"
+    networks:
+      - paperless
+
+  paperless-db:
+    image: postgres:16-alpine
+    container_name: paperless-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: ${PAPERLESS_DB_PASSWORD}
+    volumes:
+      - "./data/paperless/pgdata:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paperless -d paperless"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - paperless
+
+networks:
+  proxy:
+    name: torrentbox_proxy
+  paperless:
+    name: torrentbox_paperless
+    internal: true

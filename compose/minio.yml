@@ -1,0 +1,32 @@
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - minio server /data --console-address ":9001"
+    volumes:
+      - "./data/minio:/data"
+    labels:
+      - "traefik.enable=true"
+      # S3 API
+      - "traefik.http.routers.myminio.entrypoints=websecure"
+      - "traefik.http.routers.myminio.rule=Host(`minio.microserver`)"
+      - "traefik.http.routers.myminio.service=myminio"
+      - "traefik.http.services.myminio.loadbalancer.server.port=9000"
+      # web console
+      - "traefik.http.routers.myminioadmin.entrypoints=websecure"
+      - "traefik.http.routers.myminioadmin.rule=Host(`minioadmin.microserver`)"
+      - "traefik.http.routers.myminioadmin.service=myminioadmin"
+      - "traefik.http.services.myminioadmin.loadbalancer.server.port=9001"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: torrentbox_proxy

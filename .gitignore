@@ -1,0 +1,26 @@
+# secrets
+.env
+config/copyparty/copyparty.conf
+
+# runtime state / app data
+data/
+
+# bulk media
+downloads/
+
+# backups
+bkp.tar.gz
+*.bak
+
+# legacy dirs (pre-restructure, pending cleanup)
+vpn/
+minio/
+jellyfin/
+qbittorrent/
+homarr/
+glance/
+plex/
+portainer/
+flood/
+var/
+copyparty/

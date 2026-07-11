@@ -1,0 +1,20 @@
+services:
+  samba:
+    image: ghcr.io/servercontainers/samba:latest
+    container_name: samba
+    restart: unless-stopped
+    ports:
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    environment:
+      # avahi/wsdd2 need host networking to be useful; we only publish smb ports
+      AVAHI_DISABLE: "1"
+      WSDD2_DISABLE: "1"
+      ACCOUNT_ice: ${SAMBA_PASSWORD}
+      UID_ice: "1000"
+      SAMBA_VOLUME_CONFIG_mount: "[Mount]; path=/data; guest ok = yes; read only = no; browseable = yes; force user = ice"
+      SAMBA_VOLUME_CONFIG_downloads: "[Downloads]; path=/data; guest ok = yes; read only = no; browseable = yes; force user = ice"
+    volumes:
+      - "./downloads:/data"

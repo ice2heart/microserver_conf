@@ -1,0 +1,26 @@
+services:
+  step-ca:
+    image: smallstep/step-ca
+    container_name: step-ca
+    restart: unless-stopped
+    environment:
+      # these only take effect on first start with an empty ./data/stepca volume
+      - DOCKER_STEPCA_INIT_NAME=microserver
+      - DOCKER_STEPCA_INIT_DNS_NAMES=step-ca,stepca.microserver
+      - DOCKER_STEPCA_INIT_ACME=true
+      - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=false
+    volumes:
+      - "./data/stepca:/home/step"
+    healthcheck:
+      # the CA cert has no localhost SAN — use the container's own network alias
+      test: ["CMD", "step", "ca", "health", "--ca-url", "https://step-ca:9000", "--root", "/home/step/certs/root_ca.crt"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: torrentbox_proxy

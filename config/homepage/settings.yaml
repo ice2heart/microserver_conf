@@ -1,0 +1,20 @@
+---
+title: microserver
+theme: dark
+color: slate
+headerStyle: clean
+hideVersion: true
+
+layout:
+  Media:
+    style: row
+    columns: 2
+  Downloads:
+    style: row
+    columns: 2
+  Files:
+    style: row
+    columns: 3
+  Infrastructure:
+    style: row
+    columns: 4

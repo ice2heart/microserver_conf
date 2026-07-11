@@ -1,0 +1,25 @@
+name: torrentbox
+
+# each service lives in its own file; project_directory keeps
+# relative bind-mount paths anchored to this directory
+include:
+  - path: compose/step-ca.yml
+    project_directory: .
+  - path: compose/traefik.yml
+    project_directory: .
+  - path: compose/vpn.yml
+    project_directory: .
+  - path: compose/samba.yml
+    project_directory: .
+  - path: compose/minio.yml
+    project_directory: .
+  - path: compose/homepage.yml
+    project_directory: .
+  - path: compose/jellyfin.yml
+    project_directory: .
+  - path: compose/twingate.yml
+    project_directory: .
+  - path: compose/copyparty.yml
+    project_directory: .
+  - path: compose/paperless.yml
+    project_directory: .

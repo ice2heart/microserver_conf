@@ -1,0 +1,52 @@
+services:
+  traefik:
+    image: traefik:v3
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      #- "--log.level=DEBUG"
+      - "--api=true"
+      # api.insecure serves the API on :8080 *inside* the docker network only
+      # (port is not published) — used by the homepage traefik widget
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=torrentbox_proxy"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls.certresolver=stepca"
+      # local ACME CA (step-ca)
+      - "--certificatesresolvers.stepca.acme.caserver=https://step-ca:9000/acme/acme/directory"
+      - "--certificatesresolvers.stepca.acme.email=admin@microserver"
+      - "--certificatesresolvers.stepca.acme.storage=/acme/acme.json"
+      - "--certificatesresolvers.stepca.acme.httpchallenge=true"
+      - "--certificatesresolvers.stepca.acme.httpchallenge.entrypoint=web"
+    environment:
+      # trust the step-ca root when talking to the ACME server
+      - LEGO_CA_CERTIFICATES=/stepca-certs/root_ca.crt
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./data/traefik:/acme"
+      - "./data/stepca/certs:/stepca-certs:ro"
+      - "./config/traefik/dynamic:/etc/traefik/dynamic:ro"
+    depends_on:
+      step-ca:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.microserver`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.service=api@internal"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: torrentbox_proxy

@@ -1,0 +1,29 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    volumes:
+      - "./config/homepage:/app/config"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      HOMEPAGE_ALLOWED_HOSTS: glance.microserver
+      # widget credentials, substituted into config/homepage/services.yaml
+      HOMEPAGE_VAR_QBT_USERNAME: ${HOMEPAGE_VAR_QBT_USERNAME:-}
+      HOMEPAGE_VAR_QBT_PASSWORD: ${HOMEPAGE_VAR_QBT_PASSWORD:-}
+      HOMEPAGE_VAR_JELLYFIN_KEY: ${HOMEPAGE_VAR_JELLYFIN_KEY:-}
+      HOMEPAGE_VAR_PAPERLESS_USERNAME: ${PAPERLESS_ADMIN_USER:-}
+      HOMEPAGE_VAR_PAPERLESS_PASSWORD: ${PAPERLESS_ADMIN_PASSWORD:-}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`glance.microserver`)"
+      - "traefik.http.routers.homepage.entrypoints=websecure"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: torrentbox_proxy
