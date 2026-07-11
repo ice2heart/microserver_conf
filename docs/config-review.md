@@ -25,7 +25,7 @@ with what was changed during the restructure and what remains as recommendations
 
 1. **Rotate every secret that lived in the old compose file** — it's in shell history,
    backups, and this file's git-less past: Samba password (a short numeric one — also weak),
-   MinIO root password, Twingate tokens (generate a new connector token pair in the
+   Twingate tokens (generate a new connector token pair in the
    Twingate admin console), and ideally the copyparty password (same value as Samba's).
    Update `.env` / `copyparty.conf` after rotating.
 2. **Add router DNS entries** for `stepca.microserver` and `kiwix.microserver`
@@ -48,14 +48,14 @@ with what was changed during the restructure and what remains as recommendations
   `socket-proxy` (e.g. `lscr.io/linuxserver/socket-proxy`) would limit them to
   read-only container queries.
 - **Replace MinIO** (upstream is dead: web console gutted from the community
-  edition May 2025, repo archived April 2026). Best fit for "backup target with
-  easy account management": **SFTPGo** — web admin UI for creating users, plain
-  files on disk (root it under `downloads/backups/` so backups are visible via
-  Samba/Copyparty), speaks WebDAV + SFTP + FTP/S + HTTPS; restic/rclone/kopia
-  all support those. If a real S3 *API* turns out to be needed by some app,
-  add **Garage** alongside (S3-only, opaque blob storage, no official UI);
-  RustFS is still alpha, SeaweedFS is overkill for one box.
-- **Remaining `latest` tags**: `minio/minio` (only date-stamped tags upstream),
+  edition May 2025, repo archived April 2026). **Done (2026-07-11):** replaced
+  with **SFTPGo** (`compose/sftpgo.yml`) — web admin UI on the old
+  `minioadmin.microserver` name, WebDAV on `minio.microserver`, SFTP on host
+  port 2022, user storage rooted at `downloads/backup/` so backups are visible
+  via Samba/Copyparty. Old bucket data was dropped on request (`data/minio/`
+  left on disk until deleted). If a real S3 *API* is ever needed, add
+  **Garage** alongside (S3-only, opaque blob storage, no official UI).
+- **Remaining `latest` tags**:
   `smallstep/step-ca`, `linuxserver/qbittorrent`, `servercontainers/samba`,
   `copyparty/ac`, `gethomepage/homepage` publish no stable major tags (or move fast).
   Consider renovate-style updates or periodic manual pinning.

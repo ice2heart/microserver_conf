@@ -11,7 +11,7 @@ include:
     project_directory: .
   - path: compose/samba.yml
     project_directory: .
-  - path: compose/minio.yml
+  - path: compose/sftpgo.yml
     project_directory: .
   - path: compose/homepage.yml
     project_directory: .

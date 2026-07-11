@@ -50,12 +50,12 @@
         description: file browser
         server: local
         container: copyparty
-    - MinIO:
-        icon: minio.svg
+    - SFTPGo:
+        icon: sftpgo.svg
         href: https://minioadmin.microserver
-        description: s3 storage console
+        description: backup server (sftp/webdav)
         server: local
-        container: minio
+        container: sftpgo
     - Samba:
         icon: mdi-nas
         description: smb shares (Mount, Downloads)

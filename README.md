@@ -10,7 +10,7 @@ local [step-ca](https://smallstep.com/docs/step-ca/) ACME authority.
 | qBittorrent | https://flood.microserver | torrents, tunnelled through ProtonVPN (gluetun) |
 | Jellyfin | https://media.microserver | media server |
 | Copyparty | https://fs.microserver | file browser over `downloads/` |
-| MinIO | https://minio.microserver (S3) / https://minioadmin.microserver (console) | object storage |
+| SFTPGo | https://minioadmin.microserver (web UI) / https://minio.microserver (WebDAV) / sftp port 2022 | backup server, files under `downloads/backup/` |
 | Paperless-ngx | https://paperless.microserver | document archive |
 | Kiwix | https://kiwix.microserver | offline wikipedia (ZIM archives) |
 | Traefik | https://traefik.microserver | proxy dashboard |
