@@ -1,0 +1,34 @@
+# backing stores (databases, caches) live here, off the proxy network.
+# currently only paperless-ngx's postgres + redis.
+services:
+  paperless-redis:
+    image: redis:7-alpine
+    container_name: paperless-redis
+    restart: unless-stopped
+    volumes:
+      - "./data/paperless/redisdata:/data"
+    networks:
+      - paperless
+
+  paperless-db:
+    image: postgres:16-alpine
+    container_name: paperless-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: ${PAPERLESS_DB_PASSWORD}
+    volumes:
+      - "./data/paperless/pgdata:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paperless -d paperless"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - paperless
+
+networks:
+  paperless:
+    name: torrentbox_paperless
+    internal: true

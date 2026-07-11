@@ -23,3 +23,7 @@ include:
     project_directory: .
   - path: compose/paperless.yml
     project_directory: .
+  - path: compose/db.yml
+    project_directory: .
+  - path: compose/kiwix.yml
+    project_directory: .

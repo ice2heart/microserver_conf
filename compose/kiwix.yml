@@ -1,0 +1,22 @@
+services:
+  # offline wikipedia (and any other ZIM archives) — https://kiwix.org
+  # drop .zim files into ./data/kiwix/ and restart; full english wikipedia is
+  # wikipedia_en_all_maxi (~110 GB) from https://download.kiwix.org/zim/wikipedia/
+  kiwix:
+    image: ghcr.io/kiwix/kiwix-serve:latest
+    container_name: kiwix
+    restart: unless-stopped
+    command: ["*.zim"]
+    volumes:
+      - "./data/kiwix:/data:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kiwix.rule=Host(`kiwix.microserver`)"
+      - "traefik.http.routers.kiwix.entrypoints=websecure"
+      - "traefik.http.services.kiwix.loadbalancer.server.port=8080"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: torrentbox_proxy

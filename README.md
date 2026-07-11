@@ -12,6 +12,7 @@ local [step-ca](https://smallstep.com/docs/step-ca/) ACME authority.
 | Copyparty | https://fs.microserver | file browser over `downloads/` |
 | MinIO | https://minio.microserver (S3) / https://minioadmin.microserver (console) | object storage |
 | Paperless-ngx | https://paperless.microserver | document archive |
+| Kiwix | https://kiwix.microserver | offline wikipedia (ZIM archives) |
 | Traefik | https://traefik.microserver | proxy dashboard |
 | Samba | `\\192.168.1.52` (`Mount`, `Downloads`) | SMB shares |
 | Twingate | — | remote access connector |
@@ -34,7 +35,9 @@ downloads/           bulk media — gitignored, never touched by the tooling
 
 1. `cp .env.example .env` and fill in secrets;
    `cp config/copyparty/copyparty.conf.example config/copyparty/copyparty.conf`
-   and set the account password.
+   and set the account password;
+   `cp config/gluetun/auth.toml.example config/gluetun/auth.toml` and set the
+   API key (same value as `HOMEPAGE_VAR_GLUETUN_KEY` in `.env`).
 2. `docker compose up -d step-ca` — first start initializes the CA into
    `data/stepca/` (root cert, keys, ACME provisioner).
 3. Optional but recommended: lengthen ACME cert lifetime so renewals are ~90 days
@@ -65,8 +68,13 @@ docker compose pull && docker compose up -d   # update images
   proxies on the docker subnet); anything else needs the login from `.env`
   (`HOMEPAGE_VAR_QBT_*`) — Homepage's widget uses the same credentials.
 - Paperless: drop files into `data/paperless/consume/` (or the web UI) to ingest.
+- Kiwix: drop `.zim` archives into `data/kiwix/` and `docker compose restart kiwix`.
+  Full English Wikipedia is `wikipedia_en_all_maxi` (~110 GB) from
+  https://download.kiwix.org/zim/wikipedia/ — a small test archive is included.
 - Homepage widgets need API credentials in `.env` (`HOMEPAGE_VAR_*`); they show
-  errors until filled in.
+  errors until filled in. The gluetun widget also needs
+  `config/gluetun/auth.toml` (copy from `auth.toml.example`, key must match
+  `HOMEPAGE_VAR_GLUETUN_KEY`).
 
 See [docs/config-review.md](docs/config-review.md) for the security review and
 open recommendations (secret rotation!).

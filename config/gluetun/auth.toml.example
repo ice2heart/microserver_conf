@@ -1,0 +1,11 @@
+# gluetun control server auth — copy to auth.toml and set a real key
+# (openssl rand -base64 24; same value goes into .env HOMEPAGE_VAR_GLUETUN_KEY)
+[[roles]]
+name = "homepage"
+auth = "apikey"
+apikey = "changeme"
+routes = [
+  "GET /v1/publicip/ip",
+  "GET /v1/openvpn/portforwarded",
+  "GET /v1/vpn/status",
+]

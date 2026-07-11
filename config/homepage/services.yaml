@@ -12,6 +12,13 @@
           key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
           enableBlocks: true
 
+    - Kiwix:
+        icon: kiwix.svg
+        href: https://kiwix.microserver
+        description: offline wikipedia
+        server: local
+        container: kiwix
+
 - Downloads:
     - qBittorrent:
         icon: qbittorrent.svg
@@ -80,3 +87,8 @@
         description: vpn tunnel
         server: local
         container: gluetun
+        widget:
+          type: gluetun
+          url: http://gluetun:8000
+          key: "{{HOMEPAGE_VAR_GLUETUN_KEY}}"
+          version: 2

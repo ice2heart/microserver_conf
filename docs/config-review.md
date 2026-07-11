@@ -28,8 +28,10 @@ with what was changed during the restructure and what remains as recommendations
    MinIO root password, Twingate tokens (generate a new connector token pair in the
    Twingate admin console), and ideally the copyparty password (same value as Samba's).
    Update `.env` / `copyparty.conf` after rotating.
-2. **Add a router DNS entry** for `stepca.microserver` → `192.168.1.52` so other
-   devices can request certificates from the CA (see `docs/local-ca.md`).
+2. **Add router DNS entries** for `stepca.microserver` and `kiwix.microserver`
+   → `192.168.1.52`. stepca lets other devices request certificates from the CA
+   (see `docs/local-ca.md`); kiwix needs the name resolvable before Traefik can
+   pass the ACME challenge and get its certificate.
    `traefik.microserver` and `paperless.microserver` already resolve. Optionally add
    `home.microserver` if you want the dashboard off the legacy `glance.microserver`
    name (then change the router rule and `HOMEPAGE_ALLOWED_HOSTS` in
@@ -45,6 +47,14 @@ with what was changed during the restructure and what remains as recommendations
 - **Docker socket proxy**: Traefik and Homepage read the docker socket; a
   `socket-proxy` (e.g. `lscr.io/linuxserver/socket-proxy`) would limit them to
   read-only container queries.
+- **Replace MinIO** (upstream is dead: web console gutted from the community
+  edition May 2025, repo archived April 2026). Best fit for "backup target with
+  easy account management": **SFTPGo** — web admin UI for creating users, plain
+  files on disk (root it under `downloads/backups/` so backups are visible via
+  Samba/Copyparty), speaks WebDAV + SFTP + FTP/S + HTTPS; restic/rclone/kopia
+  all support those. If a real S3 *API* turns out to be needed by some app,
+  add **Garage** alongside (S3-only, opaque blob storage, no official UI);
+  RustFS is still alpha, SeaweedFS is overkill for one box.
 - **Remaining `latest` tags**: `minio/minio` (only date-stamped tags upstream),
   `smallstep/step-ca`, `linuxserver/qbittorrent`, `servercontainers/samba`,
   `copyparty/ac`, `gethomepage/homepage` publish no stable major tags (or move fast).

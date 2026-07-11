@@ -1,6 +1,7 @@
 # secrets
 .env
 config/copyparty/copyparty.conf
+config/gluetun/auth.toml
 
 # runtime state / app data
 data/
