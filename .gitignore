@@ -24,3 +24,6 @@ portainer/
 flood/
 var/
 copyparty/
+
+# homepage runtime files
+config/homepage/logs/

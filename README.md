@@ -45,17 +45,10 @@ downloads/           bulk media — gitignored, never touched by the tooling
 
 ## Trusting the CA on your devices (one-time)
 
-The CA root certificate is `data/stepca/certs/root_ca.crt`.
-
-- **Linux**: `sudo cp root_ca.crt /usr/local/share/ca-certificates/microserver.crt && sudo update-ca-certificates`
-- **Windows**: double-click → Install Certificate → Local Machine → *Trusted Root Certification Authorities*
-- **macOS**: add to Keychain Access (System), set to *Always Trust*
-- **Android**: Settings → Security → Encryption & credentials → Install a certificate → CA certificate
-- **iOS**: AirDrop/mail the cert, install profile, then Settings → General → About → Certificate Trust Settings
-- **Firefox** (uses its own store): Settings → Certificates → Import, tick *Trust for websites*
-
-Grab it from the server: `scp ice@192.168.1.52:/opt/torrentbox/data/stepca/certs/root_ca.crt .`
-or download it from https://fs.microserver once trusted (chicken-and-egg: use http redirect exception or scp the first time).
+The CA root certificate is `data/stepca/certs/root_ca.crt`, also served at
+`https://192.168.1.52:9000/roots.pem`. Per-OS install instructions, fingerprint
+verification, and how to issue certificates for *other* machines on the LAN
+(step CLI, certbot, Caddy, ...) are in [docs/local-ca.md](docs/local-ca.md).
 
 ## Operations
 
@@ -67,6 +60,10 @@ docker compose pull && docker compose up -d   # update images
 
 - qBittorrent's listen port is set automatically from ProtonVPN's forwarded port
   (NAT-PMP) on every reconnect — no manual port juggling.
+- qBittorrent WebUI auth: browsers on the LAN (192.168.1.0/24) skip the login
+  (Traefik passes the real client IP via reverse-proxy headers; qBittorrent trusts
+  proxies on the docker subnet); anything else needs the login from `.env`
+  (`HOMEPAGE_VAR_QBT_*`) — Homepage's widget uses the same credentials.
 - Paperless: drop files into `data/paperless/consume/` (or the web UI) to ingest.
 - Homepage widgets need API credentials in `.env` (`HOMEPAGE_VAR_*`); they show
   errors until filled in.

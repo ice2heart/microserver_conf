@@ -6,9 +6,12 @@ services:
     volumes:
       - "./config/homepage:/app/config"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    # run directly as ice + host docker group so the app can read docker.sock
+    # (PUID/PGID would drop the supplementary group during the entrypoint's su-exec)
+    user: "1000:1000"
+    group_add:
+      - "989"
     environment:
-      PUID: "1000"
-      PGID: "1000"
       HOMEPAGE_ALLOWED_HOSTS: glance.microserver
       # widget credentials, substituted into config/homepage/services.yaml
       HOMEPAGE_VAR_QBT_USERNAME: ${HOMEPAGE_VAR_QBT_USERNAME:-}

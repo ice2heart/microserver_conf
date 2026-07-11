@@ -28,13 +28,14 @@ with what was changed during the restructure and what remains as recommendations
    MinIO root password, Twingate tokens (generate a new connector token pair in the
    Twingate admin console), and ideally the copyparty password (same value as Samba's).
    Update `.env` / `copyparty.conf` after rotating.
-2. **Add a router DNS entry** for `traefik.microserver` → `192.168.1.52` (the dashboard
-   router is configured; its certificate is issued on first successful access).
-   `paperless.microserver` already resolves. Optionally add `home.microserver` if you
-   want the dashboard off the legacy `glance.microserver` name (then change the router
-   rule and `HOMEPAGE_ALLOWED_HOSTS` in `compose/homepage.yml`).
+2. **Add a router DNS entry** for `stepca.microserver` → `192.168.1.52` so other
+   devices can request certificates from the CA (see `docs/local-ca.md`).
+   `traefik.microserver` and `paperless.microserver` already resolve. Optionally add
+   `home.microserver` if you want the dashboard off the legacy `glance.microserver`
+   name (then change the router rule and `HOMEPAGE_ALLOWED_HOSTS` in
+   `compose/homepage.yml`).
 3. **Install the CA root cert** (`data/stepca/certs/root_ca.crt`) on your devices —
-   see README.
+   see `docs/local-ca.md`.
 
 ## Recommendations (not done, low urgency)
 

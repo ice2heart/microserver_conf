@@ -9,6 +9,10 @@ services:
       - DOCKER_STEPCA_INIT_DNS_NAMES=step-ca,stepca.microserver
       - DOCKER_STEPCA_INIT_ACME=true
       - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=false
+    ports:
+      # expose the CA to the LAN so other devices can request certs
+      # (https://stepca.microserver:9000 — see docs/local-ca.md)
+      - "9000:9000"
     volumes:
       - "./data/stepca:/home/step"
     healthcheck:
