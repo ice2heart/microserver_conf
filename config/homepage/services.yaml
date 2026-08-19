@@ -51,7 +51,7 @@
         server: local
         container: copyparty
     - SFTPGo:
-        icon: sftpgo.svg
+        icon: mdi-nas
         href: https://minioadmin.microserver
         description: backup server (sftp/webdav)
         server: local
