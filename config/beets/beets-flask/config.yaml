@@ -1,0 +1,31 @@
+# ------------------------------------------------------------------------------------ #
+#                                   BEETS GUI CONFIG                                   #
+# ------------------------------------------------------------------------------------ #
+# Example file, this file was automatically copied to /config/beets-flask/config.yaml.
+# Feel free to edit this file to customize the gui configuration.
+# Especially the `folders` section in the `inbox` section are important to set up your inbox
+# folders. You can add as many folders as you like, but don't forget to volume-map them in
+# your docker-compose.yml.
+
+gui:
+    num_preview_workers: 4 # how many previews to generate in parallel
+
+    library:
+        # Use to split artists in the library view if using multiple artists in a field.
+        # Set to an empty list to disable this feature.
+        artist_separators: [",", ";", "&"]
+
+    terminal:
+        start_path: "/music/inbox" # the directory where to start new terminal sessions
+
+    inbox:
+        folders:
+            # /music/inbox is the compose bind mount for the existing messy
+            # downloads/music tree -- see docs/music-stack.md. Started in
+            # "preview" mode given the size of the backlog; switch to "auto"
+            # for new arrivals once it's been triaged.
+            Inbox:
+                name: "Downloads inbox"
+                path: "/music/inbox"
+                autotag: "preview"
+                # trigger tag but do not import, recommended for most control

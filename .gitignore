@@ -28,3 +28,8 @@ copyparty/
 
 # homepage runtime files
 config/homepage/logs/
+
+# beets-flask bundles runtime state (library/app db) alongside its config
+# under the same /config mount -- only the .yaml files are hand-authored
+config/beets/beets/library.db
+config/beets/beets-flask/beets-flask-sqlite.db

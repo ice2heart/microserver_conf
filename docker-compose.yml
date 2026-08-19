@@ -27,3 +27,5 @@ include:
     project_directory: .
   - path: compose/kiwix.yml
     project_directory: .
+  - path: compose/music.yml
+    project_directory: .

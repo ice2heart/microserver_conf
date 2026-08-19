@@ -1,0 +1,88 @@
+services:
+  # https://github.com/pspitzner/beets-flask -- beets tagger with import-preview
+  # web UI and inbox watching, bundled in one container
+  beets-flask:
+    image: pspitzner/beets-flask:stable
+    container_name: beets-flask
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+      USER_ID: "1000"
+      GROUP_ID: "1000"
+    volumes:
+      - "./config/beets:/config"
+      - "./downloads/music:/music/inbox"
+      - "./downloads/music-library:/music/clean"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.beets.rule=Host(`beets.microserver`)"
+      - "traefik.http.routers.beets.entrypoints=websecure"
+      - "traefik.http.services.beets.loadbalancer.server.port=5001"
+    networks:
+      - proxy
+
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    user: "1000:1000"
+    environment:
+      ND_SCANSCHEDULE: "@every 1h"
+      ND_LOGLEVEL: info
+    volumes:
+      - "./data/navidrome:/data"
+      - type: bind
+        source: ./downloads/music-library
+        target: /music
+        read_only: true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.navidrome.rule=Host(`navidrome.microserver`)"
+      - "traefik.http.routers.navidrome.entrypoints=websecure"
+      - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
+    networks:
+      - proxy
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ:-UTC}
+    volumes:
+      - "./data/prowlarr:/config"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.microserver`)"
+      - "traefik.http.routers.prowlarr.entrypoints=websecure"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+    networks:
+      - proxy
+
+  # root folder (/music) is shared with beets-flask's clean output --
+  # both tools organize into the same downloads/music-library tree
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ:-UTC}
+    volumes:
+      - "./data/lidarr:/config"
+      - "./downloads:/downloads"
+      - "./downloads/music-library:/music"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lidarr.rule=Host(`lidarr.microserver`)"
+      - "traefik.http.routers.lidarr.entrypoints=websecure"
+      - "traefik.http.services.lidarr.loadbalancer.server.port=8686"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: torrentbox_proxy

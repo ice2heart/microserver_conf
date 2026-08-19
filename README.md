@@ -13,6 +13,10 @@ local [step-ca](https://smallstep.com/docs/step-ca/) ACME authority.
 | SFTPGo | https://minioadmin.microserver (web UI) / https://minio.microserver (WebDAV) / sftp port 2022 | backup server, files under `downloads/backup/` |
 | Paperless-ngx | https://paperless.microserver | document archive |
 | Kiwix | https://kiwix.microserver | offline wikipedia (ZIM archives) |
+| Navidrome | https://navidrome.microserver | music streaming |
+| Beets | https://beets.microserver | music tagger / importer (see [docs/music-stack.md](docs/music-stack.md)) |
+| Lidarr | https://lidarr.microserver | music collection manager |
+| Prowlarr | https://prowlarr.microserver | indexer manager |
 | Traefik | https://traefik.microserver | proxy dashboard |
 | Samba | `\\192.168.1.52` (`Mount`, `Downloads`) | SMB shares |
 | Twingate | — | remote access connector |

@@ -19,6 +19,25 @@
         server: local
         container: kiwix
 
+    - Navidrome:
+        icon: navidrome.svg
+        href: https://navidrome.microserver
+        description: music streaming
+        server: local
+        container: navidrome
+        widget:
+          type: navidrome
+          url: http://navidrome:4533
+          username: "{{HOMEPAGE_VAR_NAVIDROME_USERNAME}}"
+          password: "{{HOMEPAGE_VAR_NAVIDROME_PASSWORD}}"
+
+    - Beets:
+        icon: mdi-music-note
+        href: https://beets.microserver
+        description: music tagger / importer
+        server: local
+        container: beets-flask
+
 - Downloads:
     - qBittorrent:
         icon: qbittorrent.svg
@@ -42,6 +61,26 @@
           url: http://paperless:8000
           username: "{{HOMEPAGE_VAR_PAPERLESS_USERNAME}}"
           password: "{{HOMEPAGE_VAR_PAPERLESS_PASSWORD}}"
+    - Lidarr:
+        icon: lidarr.svg
+        href: https://lidarr.microserver
+        description: music collection manager
+        server: local
+        container: lidarr
+        widget:
+          type: lidarr
+          url: http://lidarr:8686
+          key: "{{HOMEPAGE_VAR_LIDARR_KEY}}"
+    - Prowlarr:
+        icon: prowlarr.svg
+        href: https://prowlarr.microserver
+        description: indexer manager
+        server: local
+        container: prowlarr
+        widget:
+          type: prowlarr
+          url: http://prowlarr:9696
+          key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
 
 - Files:
     - Copyparty:
