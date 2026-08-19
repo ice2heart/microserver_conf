@@ -11,8 +11,8 @@ services:
       GROUP_ID: "1000"
     volumes:
       - "./config/beets:/config"
-      - "./downloads/music:/music/inbox"
-      - "./downloads/music-library:/music/clean"
+      - "./downloads/music-tmp:/music/inbox"
+      - "./downloads/music:/music/clean"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.beets.rule=Host(`beets.microserver`)"
@@ -32,7 +32,7 @@ services:
     volumes:
       - "./data/navidrome:/data"
       - type: bind
-        source: ./downloads/music-library
+        source: ./downloads/music
         target: /music
         read_only: true
     labels:
@@ -40,6 +40,16 @@ services:
       - "traefik.http.routers.navidrome.rule=Host(`navidrome.microserver`)"
       - "traefik.http.routers.navidrome.entrypoints=websecure"
       - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
+    networks:
+      - proxy
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+      LOG_LEVEL: info
     networks:
       - proxy
 
@@ -74,7 +84,7 @@ services:
     volumes:
       - "./data/lidarr:/config"
       - "./downloads:/downloads"
-      - "./downloads/music-library:/music"
+      - "./downloads/music:/music"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.lidarr.rule=Host(`lidarr.microserver`)"

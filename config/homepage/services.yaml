@@ -81,6 +81,12 @@
           type: prowlarr
           url: http://prowlarr:9696
           key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+    - FlareSolverr:
+        icon: mdi-shield-lock-outline
+        href: https://flaresolverr.microserver
+        description: cloudflare solver proxy
+        server: local
+        container: flaresolverr
 
 - Files:
     - Copyparty:

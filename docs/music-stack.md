@@ -1,10 +1,11 @@
-# Music stack: beets, Navidrome, Lidarr, Prowlarr
+# Music stack: beets, Navidrome, Lidarr, Prowlarr, FlareSolverr
 
 Defined in [compose/music.yml](../compose/music.yml). Adds automated music
 collection management (Lidarr + Prowlarr, wired to the existing qBittorrent),
 a tagger/organizer for the pre-existing messy `downloads/music/` tree (beets,
-via the beets-flask web UI), and a streaming server (Navidrome) over the
-cleaned-up result.
+via the beets-flask web UI), a streaming server (Navidrome) over the
+cleaned-up result, and FlareSolverr (a Cloudflare-solving proxy Prowlarr can
+hand off Cloudflare-protected indexers to).
 
 None of the cross-app wiring below is compose-configurable: Lidarr and
 Prowlarr each generate their own API key on first boot (stored in their
@@ -36,9 +37,9 @@ Lidarr and Prowlarr don't need this — their linuxserver.io images `chown`
 their own `/config` as root before switching to the `PUID`/`PGID` user.
 
 Add router DNS entries (no wildcard on this LAN — see
-[config-review.md](config-review.md)) for the four new hostnames, pointing
+[config-review.md](config-review.md)) for the five new hostnames, pointing
 at `192.168.1.52`: `beets.microserver`, `navidrome.microserver`,
-`lidarr.microserver`, `prowlarr.microserver`.
+`lidarr.microserver`, `prowlarr.microserver`, `flaresolverr.microserver`.
 
 ## Data flow
 
@@ -59,6 +60,11 @@ fighting over renames, split them into separate target folders later.
 
 1. **Prowlarr** (`https://prowlarr.microserver`): set an admin login on
    first load. Then:
+   - *Settings → Indexers → Indexer Proxies → Add → FlareSolverr* — host
+     `http://flaresolverr:8191`, leave tags empty for now. Only needed for
+     indexers that return a Cloudflare challenge page; tag those specific
+     indexers with this proxy under *Settings → Indexers → (indexer) →
+     Tags* rather than applying it globally.
    - *Settings → Indexers → Add Indexer* — add the torrent indexers you use.
    - *Settings → Download Clients → Add → qBittorrent* — host `gluetun`,
      port `8080`, qBittorrent WebUI credentials (qBittorrent has no network
@@ -97,7 +103,12 @@ first launch. After first `docker compose up -d beets-flask`:
 No pre-seedable admin env var — visit `https://navidrome.microserver` after
 first boot and create the admin account through the setup screen.
 
-## Homepage widget credentials
+## Homepage
+
+FlareSolverr gets a plain link tile (`config/homepage/services.yaml`, under
+*Downloads*) — no API key, since it has no widget type in Homepage.
+
+### Homepage widget credentials
 
 Add these to `.env` (template in [.env.example](../.env.example)) so the
 Lidarr/Prowlarr/Navidrome dashboard tiles show live data instead of widget
@@ -129,9 +140,12 @@ docker compose up -d homepage
 
 ```sh
 docker compose config                       # validate merged compose
-docker compose up -d beets-flask navidrome prowlarr lidarr
+docker compose up -d beets-flask navidrome prowlarr lidarr flaresolverr
 docker compose logs -f lidarr                # watch for clean startup
 
 # confirm lidarr/prowlarr can reach qbittorrent through gluetun
 docker exec lidarr wget -qO- http://gluetun:8080   # expect a login page, not a connection error
+
+# confirm prowlarr can reach flaresolverr
+docker exec prowlarr wget -qO- http://flaresolverr:8191   # expect a small HTML status page
 ```
