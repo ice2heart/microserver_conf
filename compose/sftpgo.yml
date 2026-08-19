@@ -1,0 +1,36 @@
+services:
+  sftpgo:
+    image: drakkan/sftpgo:v2
+    container_name: sftpgo
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - SFTPGO_DATA_PROVIDER__CREATE_DEFAULT_ADMIN=1
+      - SFTPGO_DEFAULT_ADMIN_USERNAME=${SFTPGO_ADMIN_USER}
+      - SFTPGO_DEFAULT_ADMIN_PASSWORD=${SFTPGO_ADMIN_PASSWORD}
+      # new users created in the admin UI get homes under downloads/backup
+      - SFTPGO_DATA_PROVIDER__USERS_BASE_DIR=/srv/sftpgo/data
+      - SFTPGO_WEBDAVD__BINDINGS__0__PORT=10080
+    ports:
+      - "2022:2022" # SFTP
+    volumes:
+      - "./data/sftpgo:/var/lib/sftpgo" # db + ssh host keys
+      - "./downloads/backup:/srv/sftpgo/data" # backup storage root
+    labels:
+      - "traefik.enable=true"
+      # WebDAV endpoint (reuses the old MinIO S3 hostname)
+      - "traefik.http.routers.sftpgo-dav.entrypoints=websecure"
+      - "traefik.http.routers.sftpgo-dav.rule=Host(`minio.microserver`)"
+      - "traefik.http.routers.sftpgo-dav.service=sftpgo-dav"
+      - "traefik.http.services.sftpgo-dav.loadbalancer.server.port=10080"
+      # web admin + client UI (reuses the old MinIO console hostname)
+      - "traefik.http.routers.sftpgo-ui.entrypoints=websecure"
+      - "traefik.http.routers.sftpgo-ui.rule=Host(`minioadmin.microserver`)"
+      - "traefik.http.routers.sftpgo-ui.service=sftpgo-ui"
+      - "traefik.http.services.sftpgo-ui.loadbalancer.server.port=8080"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: torrentbox_proxy
