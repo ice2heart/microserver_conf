@@ -11,7 +11,7 @@ services:
       GROUP_ID: "1000"
     volumes:
       - "./config/beets:/config"
-      - "./downloads/music-tmp:/music/inbox"
+      - "./downloads/music-inbox:/music/inbox"
       - "./downloads/music:/music/clean"
     labels:
       - "traefik.enable=true"
