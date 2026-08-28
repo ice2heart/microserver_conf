@@ -28,8 +28,9 @@
         widget:
           type: navidrome
           url: http://navidrome:4533
-          username: "{{HOMEPAGE_VAR_NAVIDROME_USERNAME}}"
-          password: "{{HOMEPAGE_VAR_NAVIDROME_PASSWORD}}"
+          user: "{{HOMEPAGE_VAR_NAVIDROME_USERNAME}}"
+          token: "{{HOMEPAGE_VAR_NAVIDROME_TOKEN}}"
+          salt: "{{HOMEPAGE_VAR_NAVIDROME_SALT}}"
 
     - Beets:
         icon: mdi-music-note
