@@ -16,7 +16,10 @@ local [step-ca](https://smallstep.com/docs/step-ca/) ACME authority.
 | Navidrome | https://navidrome.microserver | music streaming |
 | Beets | https://beets.microserver | music tagger / importer (see [docs/music-stack.md](docs/music-stack.md)) |
 | Lidarr | https://lidarr.microserver | music collection manager |
+| Sonarr | https://sonarr.microserver | tv collection manager |
+| Radarr | https://radarr.microserver | movie collection manager |
 | Prowlarr | https://prowlarr.microserver | indexer manager |
+| FlareSolverr | — | cloudflare solver proxy (used by Prowlarr) |
 | Traefik | https://traefik.microserver | proxy dashboard |
 | Samba | `\\192.168.1.52` (`Mount`, `Downloads`) | SMB shares |
 | Twingate | — | remote access connector |

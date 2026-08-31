@@ -72,6 +72,26 @@
           type: lidarr
           url: http://lidarr:8686
           key: "{{HOMEPAGE_VAR_LIDARR_KEY}}"
+    - Sonarr:
+        icon: sonarr.svg
+        href: https://sonarr.microserver
+        description: tv collection manager
+        server: local
+        container: sonarr
+        widget:
+          type: sonarr
+          url: http://sonarr:8989
+          key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+    - Radarr:
+        icon: radarr.svg
+        href: https://radarr.microserver
+        description: movie collection manager
+        server: local
+        container: radarr
+        widget:
+          type: radarr
+          url: http://radarr:7878
+          key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
     - Prowlarr:
         icon: prowlarr.svg
         href: https://prowlarr.microserver

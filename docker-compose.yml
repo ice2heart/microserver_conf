@@ -29,3 +29,7 @@ include:
     project_directory: .
   - path: compose/music.yml
     project_directory: .
+  - path: compose/indexers.yml
+    project_directory: .
+  - path: compose/move.yml
+    project_directory: .
